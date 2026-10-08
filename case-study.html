@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI Lead Responder with n8n + Claude | Case Study</title>
+<meta name="description" content="Case study: an n8n + Claude workflow that answers website enquiries for a dental clinic in 8.3 seconds and saves every lead to a database. Built by McKeen Asma, AI Automation VA.">
+<meta name="author" content="McKeen Asma">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://mckenneth.vercel.app/case-studies/ai-lead-responder/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AI lead responder: website enquiries answered in 8.3 seconds">
+<meta property="og:description" content="Lead form → n8n → Claude drafts the reply → saved to the lead sheet → reply sent. A real recorded run, with the full AI reply and video transcript.">
+<meta property="og:image" content="img/poster.jpg">
+<meta property="og:image:width" content="900">
+<meta property="og:image:height" content="506">
+<meta property="og:image:alt" content="Bayview Dental website form with a visitor typing a question">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="AI lead responder: website enquiries answered in 8.3 seconds">
+<meta name="twitter:description" content="An n8n + Claude workflow that replies to website leads and saves every one. Real run, real reply text.">
+<meta name="twitter:image" content="img/poster.jpg">
+<style>
+:root{--bg:#f7f8fa;--card:#fff;--ink:#14212b;--muted:#5a6b78;--line:#dde3e8;--accent:#0f7c86;--accent-soft:#e3f3f4;--hot:#e0662b}
+@media (prefers-color-scheme:dark){:root{--bg:#0f1519;--card:#172026;--ink:#e6edf1;--muted:#9aabb6;--line:#2a3640;--accent:#4fc1ca;--accent-soft:#16343a;--hot:#ff8a52}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:760px;margin:0 auto;padding:32px 16px 56px}
+h1{font-size:clamp(26px,6vw,36px);line-height:1.2;margin:.2em 0 .3em}
+h2{font-size:21px;margin:40px 0 10px}
+p{margin:0 0 12px}
+.tag{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--accent)}
+.lede{font-size:19px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:24px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.stat b{display:block;font-size:28px;color:var(--accent);line-height:1.2}
+.stat span{font-size:14px;color:var(--muted)}
+figure{margin:16px 0;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px}
+figure img{display:block;width:100%;height:auto;border-radius:8px}
+figcaption{font-size:14px;color:var(--muted);padding:8px 4px 0}
+svg{display:block;width:100%;height:auto}
+.box{fill:var(--card);stroke:var(--line);stroke-width:1.5}
+.box.ai{stroke:var(--accent);stroke-width:2}
+.t1{fill:var(--ink);font:600 15px system-ui,sans-serif}
+.t2{fill:var(--muted);font:13px system-ui,sans-serif}
+.arrow{stroke:var(--accent);stroke-width:2;fill:none}
+.reply{background:var(--accent-soft);border-left:4px solid var(--accent);border-radius:8px;padding:12px 16px;white-space:pre-line;font-size:16px}
+ol,ul{padding-left:22px;margin:0 0 12px}
+li{margin:6px 0}
+.note{font-size:14px;color:var(--muted)}
+footer{margin-top:48px;padding-top:20px;border-top:1px solid var(--line);font-size:15px}
+a{color:var(--accent)}
+</style>
+<style>
+h3{font-size:17px;margin:20px 0 4px}
+blockquote{margin:0 0 16px}
+.transcript p{margin:0 0 10px}
+.transcript time{display:inline-block;min-width:3.2em;font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
+</style>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"Article","headline":"AI lead responder: every website enquiry answered in seconds","description":"Case study of an n8n + Claude workflow that answers website enquiries for a demo dental clinic in 8.3 seconds and saves every lead to Postgres.","image":"img/poster.jpg","inLanguage":"en","datePublished":"2026-10-08","author":{"@type":"Person","name":"McKeen Asma","jobTitle":"AI Automation VA","url":"https://mckenneth.vercel.app","address":{"@type":"PostalAddress","addressLocality":"Davao City","addressCountry":"PH"}},"about":["AI lead response","n8n workflow automation","Claude AI","lead capture"],"keywords":"AI lead responder, n8n, Claude, automation, virtual assistant, dental clinic, lead capture, Postgres"}
+</script>
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"VideoObject","name":"AI lead responder demo (n8n + Claude)","description":"65-second demo: a visitor asks a demo dental clinic about teeth whitening, n8n asks Claude to draft a reply, the reply arrives in 8.3 seconds and the lead is saved to the lead sheet.","thumbnailUrl":"img/poster.jpg","contentUrl":"demo/p1-demo.mp4","uploadDate":"2026-10-08","duration":"PT1M5S","inLanguage":"en","creator":{"@type":"Person","name":"McKeen Asma"},"transcript":"A dental clinic gets a question at nine at night. Nobody is at the front desk, and by morning that lead has booked somewhere else. Here, a visitor asks Bayview Dental about teeth whitening on a Saturday, and presses send. The message goes to an n8n workflow, which asks Claude to draft a reply. This is a live call, nothing is pre-written. Seconds later, the visitor has a real answer to their question, and an invitation to book. Every lead also lands in the clinic's lead sheet, with the AI reply right beside it, so the team can follow up in the morning. The whole workflow is four steps. New lead. Draft the reply with AI. Save it to the lead sheet. Send the reply. Built by McKeen Asma, AI Automation VA, with n8n."}
+</script>
+<script type="application/ld+json">
+{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Can it use Google Sheets instead of Postgres?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. n8n has a built-in Google Sheets node, so step 3 (save the lead) can write a new row to a Google Sheet instead of a Postgres table. This demo uses Postgres."}}, {"@type": "Question", "name": "Does it work with Facebook Messenger?", "acceptedAnswer": {"@type": "Answer", "text": "Not in this demo, which uses a website form. To use Messenger, step 1 would receive messages from a Facebook Page through a Meta developer app webhook, and step 4 would send the reply back through Messenger. That needs admin access to your Page, a Meta app, and Meta's review before it can answer the public. The AI and lead-sheet steps stay the same."}}, {"@type": "Question", "name": "How long does it take to set up?", "acceptedAnswer": {"@type": "Answer", "text": "I have not set this up for a paying client yet, so I won't quote a number from history. The workflow itself is only four steps. What it takes: your business details, access to your website form, a place to run n8n, and testing replies with real questions."}}, {"@type": "Question", "name": "Will the AI make things up?", "acceptedAnswer": {"@type": "Answer", "text": "It is told to answer only from the facts you give it and to invite the person to book. AI can still get things wrong, so every question and reply is saved in the lead sheet where your team can check it, and anything it shouldn't answer (like medical advice) can be routed to a person instead."}}, {"@type": "Question", "name": "What does it cost to run?", "acceptedAnswer": {"@type": "Answer", "text": "Two running costs: hosting n8n (self-hosted on a small server, or an n8n Cloud plan) and AI usage, which the AI provider bills per reply. I would estimate both from your monthly lead volume before we start."}}]}
+</script>
+</head>
+<body>
+<main>
+<article>
+<header>
+<span class="tag">Case study · AI lead responder</span>
+<h1>AI lead responder: every website enquiry answered in seconds, even at 9 PM</h1>
+<p class="lede">A visitor asks a clinic a question on its website. About 8 seconds later they get a helpful answer, and the clinic gets the lead and the reply saved for the morning. Nobody has to be online. I built it with n8n and Claude.</p>
+<p class="code-link"><a href="https://github.com/mcknx/ai-lead-responder">View the code on GitHub →</a></p>
+</header>
+
+<figure id="demo-video"><video controls preload="metadata" playsinline src="demo/p1-demo.mp4" poster="img/poster.jpg" style="display:block;width:100%;height:auto;border-radius:8px" aria-describedby="transcript-intro"></video><figcaption>The 65-second demo. Prefer reading? The <a href="#transcript">full transcript</a> is below, and everything in the video is also written out on this page.</figcaption></figure>
+
+<div class="stats">
+<div class="stat"><b>8.3 s</b><span>from "Send" to a full reply, in the recorded test</span></div>
+<div class="stat"><b>Every lead saved</b><span>name, email, question and the AI reply, in one lead sheet</span></div>
+<div class="stat"><b>Replies any hour</b><span>nights and weekends too, whenever the workflow is running</span></div>
+</div>
+
+<section id="problem">
+<h2>The problem: late questions become lost patients</h2>
+<p>A patient asks a question at 9 PM. Nobody is at the front desk. By morning, they have booked with another clinic.</p>
+</section>
+
+<section id="how-it-works">
+<h2>How it works: four steps</h2>
+<p>Every time someone sends the website form, one n8n workflow runs these four steps on its own:</p>
+<svg viewBox="0 0 360 250" style="max-width:520px;margin:0 auto" role="img" aria-label="Four steps: new lead, AI drafts the reply, save to lead sheet, send the reply">
+<defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0 0L10 5L0 10z" style="fill:var(--accent)"/></marker></defs>
+<rect class="box" x="4" y="4" width="150" height="86" rx="12"/>
+<text class="t1" x="79" y="42" text-anchor="middle">1. New lead</text>
+<text class="t2" x="79" y="64" text-anchor="middle">website form</text>
+<rect class="box ai" x="206" y="4" width="150" height="86" rx="12"/>
+<text class="t1" x="281" y="42" text-anchor="middle">2. AI drafts reply</text>
+<text class="t2" x="281" y="64" text-anchor="middle">using clinic info</text>
+<rect class="box" x="206" y="160" width="150" height="86" rx="12"/>
+<text class="t1" x="281" y="198" text-anchor="middle">3. Save lead</text>
+<text class="t2" x="281" y="220" text-anchor="middle">to the lead sheet</text>
+<rect class="box" x="4" y="160" width="150" height="86" rx="12"/>
+<text class="t1" x="79" y="198" text-anchor="middle">4. Send reply</text>
+<text class="t2" x="79" y="220" text-anchor="middle">to the visitor</text>
+<path class="arrow" d="M156 47H202" marker-end="url(#ah)"/>
+<path class="arrow" d="M281 92V156" marker-end="url(#ah)"/>
+<path class="arrow" d="M204 203H158" marker-end="url(#ah)"/>
+</svg>
+<ol>
+<li><b>New lead (webhook).</b> The website form sends the visitor's name, email and message to an n8n webhook.</li>
+<li><b>Draft reply (AI).</b> n8n sends the message to Claude with the clinic's facts (hours, services, prices) and asks for a short, warm reply that answers the question and invites the person to book.</li>
+<li><b>Save to lead sheet (Postgres).</b> The name, email, question and the AI reply are saved as one new row in the clinic's lead table.</li>
+<li><b>Send reply.</b> n8n returns the reply to the website, so the visitor reads the answer right under their question.</li>
+</ol>
+</section>
+
+<section id="real-reply">
+<h2>The real AI reply, word for word</h2>
+<p>In the recorded test, a visitor named Ana Cruz asked: <q>Hi, do you do teeth whitening on Saturdays? How much?</q> 8.3 seconds later she got this reply, written live by Claude (nothing pre-written):</p>
+<blockquote class="reply">Hi Ana,
+
+Yes, we do teeth whitening on Saturdays. We're open Monday to Saturday, 9am to 6pm. Whitening starts at PHP 8,000, and we can give you an exact price once we know which treatment suits you best.
+
+Would you like to book a Saturday slot? Reply with a time that works for you and we'll reserve it.
+
+Warm regards,
+Bayview Dental</blockquote>
+<figure><img src="img/reply.jpg" width="900" height="506" alt="The Bayview Dental website form showing Ana's question and the AI reply underneath, with a timer showing 8.3 seconds"><figcaption>The visitor sees the answer right under her question.</figcaption></figure>
+<figure><img src="img/sheet.jpg" width="900" height="506" loading="lazy" alt="The lead sheet with one row: Ana Cruz, her email, her question and the AI reply"><figcaption>The clinic sees the lead, the question and what was answered, ready for a follow-up call.</figcaption></figure>
+</section>
+
+<section id="results">
+<h2>Results (measured in the recorded run)</h2>
+<ul>
+<li><b>8.3 seconds</b> from pressing Send to the full reply on screen.</li>
+<li><b>1 of 1 leads saved</b>: the test lead landed as row #1 in the lead sheet, with the reply beside it.</li>
+</ul>
+<p class="note">Honest note: Bayview Dental is a demo clinic I made up to show the system. The workflow, the AI reply and the timing above are real, from one recorded run. There are no client results here, and I am not claiming any.</p>
+</section>
+
+<section id="tools">
+<h2>Tools used</h2>
+<ul>
+<li><b>n8n</b> (self-hosted): runs the four steps (Webhook, HTTP Request, Postgres and Respond to Webhook nodes).</li>
+<li><b>Claude</b> (Anthropic): writes the reply.</li>
+<li><b>Postgres</b>: stores the lead list.</li>
+</ul>
+<p><a href="https://github.com/mcknx/ai-lead-responder">View the code on GitHub →</a> (workflow, schema, demo scripts, MIT licence)</p>
+</section>
+
+<section id="setup">
+<h2>How I'd set this up for your business</h2>
+<ol>
+<li><b>You tell me</b> your services, prices, hours.</li>
+<li><b>I connect it</b> to your website form (or another channel).</li>
+<li><b>We test it together</b> with real questions your customers ask, until the replies sound like you.</li>
+<li><b>You get every lead in one list</b>: Postgres, Google Sheets or your CRM, whichever you already use.</li>
+</ol>
+</section>
+
+<section id="faq">
+<h2>FAQ</h2>
+<h3>Can it use Google Sheets instead of Postgres?</h3>
+<p>Yes. n8n has a built-in Google Sheets node, so step 3 (save the lead) can write a new row to a Google Sheet instead of a Postgres table. This demo uses Postgres.</p>
+<h3>Does it work with Facebook Messenger?</h3>
+<p>Not in this demo, which uses a website form. To use Messenger, step 1 would receive messages from a Facebook Page through a Meta developer app webhook, and step 4 would send the reply back through Messenger. That needs admin access to your Page, a Meta app, and Meta&#x27;s review before it can answer the public. The AI and lead-sheet steps stay the same.</p>
+<h3>How long does it take to set up?</h3>
+<p>I have not set this up for a paying client yet, so I won&#x27;t quote a number from history. The workflow itself is only four steps. What it takes: your business details, access to your website form, a place to run n8n, and testing replies with real questions.</p>
+<h3>Will the AI make things up?</h3>
+<p>It is told to answer only from the facts you give it and to invite the person to book. AI can still get things wrong, so every question and reply is saved in the lead sheet where your team can check it, and anything it shouldn&#x27;t answer (like medical advice) can be routed to a person instead.</p>
+<h3>What does it cost to run?</h3>
+<p>Two running costs: hosting n8n (self-hosted on a small server, or an n8n Cloud plan) and AI usage, which the AI provider bills per reply. I would estimate both from your monthly lead volume before we start.</p>
+</section>
+
+<section id="transcript" class="transcript">
+<h2>Video transcript</h2>
+<p id="transcript-intro" class="note">Full narration of the 65-second demo video, with start times.</p>
+<p><time>0:00</time> A dental clinic gets a question at nine at night. Nobody is at the front desk, and by morning that lead has booked somewhere else.</p>
+<p><time>0:09</time> Here, a visitor asks Bayview Dental about teeth whitening on a Saturday, and presses send.</p>
+<p><time>0:18</time> The message goes to an n8n workflow, which asks Claude to draft a reply. This is a live call, nothing is pre-written.</p>
+<p><time>0:27</time> Seconds later, the visitor has a real answer to their question, and an invitation to book.</p>
+<p><time>0:37</time> Every lead also lands in the clinic&#x27;s lead sheet, with the AI reply right beside it, so the team can follow up in the morning.</p>
+<p><time>0:48</time> The whole workflow is four steps. New lead. Draft the reply with AI. Save it to the lead sheet. Send the reply.</p>
+<p><time>0:58</time> Built by McKeen Asma, AI Automation VA, with n8n.</p>
+</section>
+
+<p class="next" style="margin:24px 0 0;font-size:16px">Next: the chat assistant, same clinic: <a href="https://mckenneth.vercel.app/case-studies/clinic-chat-assistant/">it answers, books and hands off →</a></p>
+
+<footer>
+<b>McKeen Asma</b> · AI Automation VA · Davao, Philippines<br>
+Portfolio: <a href="https://mckenneth.vercel.app">mckenneth.vercel.app</a>
+</footer>
+</article>
+</main>
+</body>
+</html>

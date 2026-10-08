@@ -1,0 +1,9 @@
+[
+ {"id":"1-hook","voice":"caro_davy","text":"A dental clinic gets a question at nine at night. Nobody is at the front desk, and by morning that lead has booked somewhere else."},
+ {"id":"2-form","voice":"caro_davy","text":"Here, a visitor asks Bayview Dental about teeth whitening on a Saturday, and presses send."},
+ {"id":"3-wait","voice":"caro_davy","text":"The message goes to an n8n workflow, which asks Claude to draft a reply. This is a live call, nothing is pre-written."},
+ {"id":"4-reply","voice":"caro_davy","text":"Seconds later, the visitor has a real answer to their question, and an invitation to book."},
+ {"id":"5-sheet","voice":"caro_davy","text":"Every lead also lands in the clinic's lead sheet, with the AI reply right beside it, so the team can follow up in the morning."},
+ {"id":"6-flow","voice":"caro_davy","text":"The whole workflow is four steps. New lead. Draft the reply with AI. Save it to the lead sheet. Send the reply."},
+ {"id":"7-end","voice":"caro_davy","text":"Built by McKeen Asma, AI Automation V A, with n8n."}
+]

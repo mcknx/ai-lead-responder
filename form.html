@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bayview Dental — Ask us anything</title>
+<style>
+  :root { --ink:#0f2a3d; --muted:#5b7083; --line:#dde5ec; --brand:#0e7c86; --brand-dark:#0a5f67; --bg:#f3f7fa; --ok:#1a7f4b; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { background:#fff; border-bottom:1px solid var(--line); padding:14px 24px; display:flex; align-items:center; gap:10px; }
+  .logo { width:34px; height:34px; border-radius:9px; background:var(--brand); color:#fff; display:grid; place-items:center; font-weight:700; }
+  header b { font-size:18px; } header span { color:var(--muted); font-size:14px; margin-left:auto; }
+  main { max-width:640px; margin:24px auto; padding:0 16px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:14px; padding:28px; box-shadow:0 1px 2px rgba(15,42,61,.04), 0 8px 24px rgba(15,42,61,.06); }
+  h1 { margin:0 0 4px; font-size:26px; } .sub { margin:0 0 22px; color:var(--muted); }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  label { display:block; font-size:14px; font-weight:600; margin-bottom:14px; }
+  input, textarea { width:100%; margin-top:6px; padding:11px 12px; font:inherit; font-weight:400; color:inherit; border:1px solid var(--line); border-radius:9px; background:#fbfdfe; }
+  input:focus, textarea:focus { outline:2px solid var(--brand); outline-offset:0; border-color:var(--brand); background:#fff; }
+  textarea { min-height:90px; resize:vertical; }
+  button { width:100%; padding:13px; font:600 16px inherit; font-family:inherit; color:#fff; background:var(--brand); border:0; border-radius:9px; cursor:pointer; }
+  button:hover { background:var(--brand-dark); } button:disabled { opacity:.65; cursor:wait; }
+  #out { margin-top:22px; }
+  .bubble { display:flex; gap:12px; align-items:flex-start; animation:in .3s ease-out; }
+  .bubble .logo { flex:none; }
+  .msg { background:#e8f4f5; border-radius:4px 14px 14px 14px; padding:14px 16px; white-space:pre-wrap; }
+  .who { font-size:13px; font-weight:600; color:var(--brand-dark); margin-bottom:4px; }
+  .saved { margin:10px 0 0 46px; font-size:14px; color:var(--ok); font-weight:600; }
+  .typing { color:var(--muted); font-style:italic; } .err { color:#b42318; }
+  @keyframes in { from { opacity:0; transform:translateY(6px); } }
+  @media (max-width:560px) { .row { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<header><div class="logo">B</div><b>Bayview Dental</b><span>Davao City · Mon–Sat 9am–6pm</span></header>
+<main>
+  <div class="card">
+    <h1>Ask us anything</h1>
+    <p class="sub">Questions about treatments, prices or booking? We usually reply within a minute.</p>
+    <form id="f">
+      <div class="row">
+        <label>Name <input name="name" required autocomplete="name"></label>
+        <label>Email <input name="email" type="email" required autocomplete="email"></label>
+      </div>
+      <label>Message <textarea name="message" required placeholder="e.g. Do you do teeth whitening on Saturdays?"></textarea></label>
+      <button id="b">Send</button>
+    </form>
+    <div id="out" aria-live="polite"></div>
+  </div>
+</main>
+<script>
+const f = document.getElementById("f"), b = document.getElementById("b"), out = document.getElementById("out");
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+f.onsubmit = async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(f));
+  b.disabled = true; b.textContent = "Sending…";
+  out.innerHTML = '<div class="bubble"><div class="logo">B</div><div class="msg typing">Bayview Dental is typing…</div></div>';
+  try {
+    const r = await fetch("http://localhost:5678/webhook/lead", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(data) });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    const { id, reply } = await r.json();
+    out.innerHTML = `<div class="bubble"><div class="logo">B</div><div><div class="who">Bayview Dental</div><div class="msg">${esc(reply)}</div></div></div>
+      <div class="saved">Saved to lead sheet ✓ (row #${esc(id)})</div>`;
+    out.scrollIntoView({ behavior: "smooth", block: "end" });
+  } catch (err) {
+    out.innerHTML = `<p class="err">Sorry, something went wrong (${esc(err.message)}). Please try again.</p>`;
+  } finally { b.disabled = false; b.textContent = "Send"; }
+};
+</script>
+</body>
+</html>

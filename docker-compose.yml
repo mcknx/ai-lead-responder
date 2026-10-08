@@ -1,0 +1,39 @@
+# n8n + Postgres for the demo. Copy .env.example to .env and set N8N_ENCRYPTION_KEY first.
+services:
+  n8n:
+    image: docker.n8n.io/n8nio/n8n:latest
+    container_name: n8n
+    restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # lets the workflow reach bridge.mjs on the host (:8788)
+    ports:
+      - "5678:5678"
+    environment:
+      # localhost piles up cookies from other local apps; avoids HTTP 431
+      - NODE_OPTIONS=--max-http-header-size=65536
+      - GENERIC_TIMEZONE=${TZ:-Asia/Manila}
+      - TZ=${TZ:-Asia/Manila}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY:?set N8N_ENCRYPTION_KEY in .env}
+      - WEBHOOK_URL=${WEBHOOK_URL:-http://localhost:5678/}
+      - N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS=true
+      - EXECUTIONS_DATA_PRUNE=true
+      - EXECUTIONS_DATA_MAX_AGE=336
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./:/demo:ro  # so `n8n import:*` can read workflow.json and pg-credential.json
+
+  pg:
+    image: postgres:16
+    container_name: va-pg
+    restart: unless-stopped
+    environment:
+      # local demo credentials only (matches pg-credential.json); not exposed outside Docker
+      - POSTGRES_USER=va
+      - POSTGRES_PASSWORD=va
+      - POSTGRES_DB=va
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+
+volumes:
+  n8n_data:
+  pg_data:

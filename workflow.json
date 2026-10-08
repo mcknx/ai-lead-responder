@@ -1,0 +1,28 @@
+{
+  "id": "vaP1LeadResponder",
+  "name": "VA P1 — AI Lead Responder",
+  "active": true,
+  "settings": {},
+  "connections": {
+    "New lead": { "main": [[{ "node": "Draft reply (AI)", "type": "main", "index": 0 }]] },
+    "Draft reply (AI)": { "main": [[{ "node": "Save to lead sheet", "type": "main", "index": 0 }]] },
+    "Save to lead sheet": { "main": [[{ "node": "Send reply", "type": "main", "index": 0 }]] }
+  },
+  "nodes": [
+    { "id": "n1", "name": "New lead", "type": "n8n-nodes-base.webhook", "typeVersion": 2, "position": [0, 0],
+      "webhookId": "va-p1-lead",
+      "parameters": { "httpMethod": "POST", "path": "lead", "responseMode": "responseNode", "options": { "allowedOrigins": "*" } } },
+    { "id": "n2", "name": "Draft reply (AI)", "type": "n8n-nodes-base.httpRequest", "typeVersion": 4.2, "position": [260, 0],
+      "parameters": { "method": "POST", "url": "http://host.docker.internal:8788/reply", "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ prompt: 'You are the friendly front desk of Bayview Dental, Davao City. Hours Mon-Sat 9am-6pm. Teeth whitening from PHP 8,000. Write a short, warm reply (max 80 words) to this lead, answer their question, and invite them to book. Sign as Bayview Dental. Lead name: ' + $json.body.name + '. Message: ' + $json.body.message }) }}",
+        "options": { "timeout": 120000 } } },
+    { "id": "n3", "name": "Save to lead sheet", "type": "n8n-nodes-base.postgres", "typeVersion": 2.5, "position": [520, 0],
+      "credentials": { "postgres": { "id": "vaPgLocal", "name": "VA Postgres (local)" } },
+      "parameters": { "operation": "executeQuery",
+        "query": "insert into leads (name,email,message,reply) values ($1,$2,$3,$4) returning id, reply",
+        "options": { "queryReplacement": "={{ [$('New lead').item.json.body.name, $('New lead').item.json.body.email, $('New lead').item.json.body.message, $json.text] }}" } } },
+    { "id": "n4", "name": "Send reply", "type": "n8n-nodes-base.respondToWebhook", "typeVersion": 1.1, "position": [780, 0],
+      "parameters": { "respondWith": "json", "responseBody": "={{ { id: $json.id, reply: $json.reply } }}" } }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "lead": {
+    "name": "Ana Cruz",
+    "email": "ana@example.com",
+    "message": "Hi, do you do teeth whitening on Saturdays? How much?"
+  },
+  "marks": {
+    "title": 0.02,
+    "form": 9.09,
+    "sent": 18.1,
+    "replied": 26.45,
+    "sheet": 40.97,
+    "flow": 53.54,
+    "end": 65.55,
+    "stop": 71.57
+  },
+  "reply": "Hi Ana,\n\nYes, we do teeth whitening on Saturdays. We're open Monday to Saturday, 9am to 6pm. Whitening starts at PHP 8,000, and we can give you an exact price once we know which treatment suits you best.\n\nWould you like to book a Saturday slot? Reply with a time that works for you and we'll reserve it.\n\nWarm regards,\nBayview Dental",
+  "savedText": "Saved to lead sheet ✓ (row #1)",
+  "replySeconds": 8.3
+}
