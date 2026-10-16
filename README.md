@@ -1,8 +1,24 @@
 # AI Lead Responder (n8n + Claude)
 
-A visitor sends a question through a clinic's website form. About 8 seconds later they get a helpful AI-written reply, and the lead plus the reply are saved to a lead sheet for the clinic.
+![The visitor's question and the AI-written reply on the clinic form](img/reply.jpg)
 
-Live case study (with the 65-second demo video): https://mckenneth.vercel.app/case-studies/ai-lead-responder/
+A visitor sends a question through a clinic's website form. Seconds later they get a helpful AI-written reply, and the lead plus the reply are saved to a lead sheet for the clinic.
+
+**What this proves:** an AI feature wired into a real workflow end to end — webhook in, LLM call, database write, response out — with a one-command check that fails if any step breaks.
+
+**Live case study (with the 65-second demo video):** https://mckenneth.vercel.app/case-studies/ai-lead-responder/
+
+**Checks (re-run 16 Oct 2026 against the running stack):**
+
+```
+$ ./check-bridge.sh
+bridge ok
+leads ok
+
+$ ./check.sh
+{"id":2,"reply":"Hi Ana,\n\nYes, we do! Teeth whitening is available on Saturdays. ..."}
+p1 ok: row saved
+```
 
 ## Architecture
 
